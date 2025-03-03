@@ -1,7 +1,6 @@
 import FavoriteToggleButton from '@/components/card/FavoriteToggleButton'
 import PropertyRating from '@/components/card/PropertyRating'
 import BreadCrumbs from '@/components/properties/BreadCrumbs'
-import BookingCalender from '@/components/properties/BookingCalender'
 import ImageContainer from '@/components/properties/ImageContainer'
 import ShareButton from '@/components/properties/ShareButton'
 import { fetchPropertyDetails, findExistingReview } from '@/utils/actions'
@@ -22,6 +21,14 @@ const DynamicMap = dynamic(
   {
     ssr: false,
     loading: () => <Skeleton className='h-[400px] w-full' />,
+  }
+)
+
+const DynamicBookingWrapper = dynamic(
+  () => import('@/components/booking/BookingWrapper'),
+  {
+    ssr: false,
+    loading: () => <Skeleton className='h-[200px] w-full' />,
   }
 )
 
@@ -64,7 +71,11 @@ async function PropertyDetailsPage({ params }: { params: { id: string } }) {
           <DynamicMap countryCode={property.country} />
         </div>
         <div className='lg:col-span-4 flex flex-col items-center'>
-          <BookingCalender />
+          <DynamicBookingWrapper
+            propertyId={property.id}
+            price={property.price}
+            bookings={property.bookings}
+          />
         </div>
       </section>
       {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
